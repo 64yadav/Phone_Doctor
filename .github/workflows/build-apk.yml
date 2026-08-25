@@ -15,11 +15,9 @@ jobs:
 
       - name: Build APK
         run: |
-          docker run --rm \
+          yes | docker run --rm -i \
             -v "$PWD":/home/user/hostcwd \
             -w /home/user/hostcwd \
-            -e CFLAGS="-D_XOPEN_SOURCE=700" \
-            -e CPPFLAGS="-D_XOPEN_SOURCE=700" \
             kivy/buildozer:latest \
             android debug
 
