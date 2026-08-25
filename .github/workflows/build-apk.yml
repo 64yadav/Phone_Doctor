@@ -2,22 +2,30 @@ name: Build APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build APK using official Kivy Buildozer Docker image
+      - name: Build APK
         run: |
-          yes | docker run --rm -i -v "$(pwd)":/home/user/hostcwd kivy/buildozer:latest android debug
+          docker run --rm \
+            -v "$PWD":/home/user/hostcwd \
+            -w /home/user/hostcwd \
+            -e CFLAGS="-D_XOPEN_SOURCE=700" \
+            -e CPPFLAGS="-D_XOPEN_SOURCE=700" \
+            kivy/buildozer:latest \
+            android debug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: digivaani-phone-doctor-apk
           path: bin/*.apk
+          if-no-files-found: error
