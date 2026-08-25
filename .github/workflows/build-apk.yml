@@ -1,29 +1,32 @@
-name: Build APK
+[app]
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+title = DigiVaani Phone Doctor
+package.name = digivaanphonedoctor
+package.domain = org.digivaani64
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+version = 1.0
 
-      - name: Build APK
-        run: |
-          yes | docker run --rm -i \
-            -v "$PWD":/home/user/hostcwd \
-            -w /home/user/hostcwd \
-            kivy/buildozer:latest \
-            android debug
+requirements = python3==3.11.9,kivy,plyer,psutil
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: digivaani-phone-doctor-apk
-          path: bin/*.apk
-          if-no-files-found: error
+orientation = portrait
+fullscreen = 0
+
+# (str) Presplash background color (for android toolchain)
+android.presplash_color = #0A0E2A
+
+# Android permissions needed for storage scanning
+android.permissions = READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
+
+# Target API / min API — adjust to current recommended values as needed
+android.api = 33
+android.minapi = 24
+android.ndk = 25b
+
+android.archs = arm64-v8a, armeabi-v7a
+
+[buildozer]
+log_level = 2
+warn_on_root = 1
